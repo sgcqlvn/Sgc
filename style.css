@@ -7,28 +7,28 @@
 body{
 
     margin:0;
-    background:#f2f3f5;
+    background:#f3f4f6;
     color:#222;
 
 }
 
 
 
-#loginPage,
-#mainPage{
+.box{
 
-    max-width:500px;
-    margin:auto;
-    padding:20px;
+    max-width:420px;
 
-}
+    margin:60px auto;
 
+    background:white;
 
+    padding:25px;
 
-#loginPage{
+    border-radius:15px;
+
+    box-shadow:0 3px 10px #ccc;
 
     text-align:center;
-    padding-top:80px;
 
 }
 
@@ -36,8 +36,11 @@ body{
 
 h1{
 
-    font-size:50px;
-    margin-bottom:5px;
+    font-size:48px;
+
+    margin:0;
+
+    color:#1976d2;
 
 }
 
@@ -46,11 +49,14 @@ h1{
 input{
 
     width:100%;
-    padding:14px;
-    margin:8px 0;
+
+    padding:12px;
+
+    margin:7px 0;
+
+    border-radius:8px;
 
     border:1px solid #ccc;
-    border-radius:10px;
 
     font-size:16px;
 
@@ -61,14 +67,17 @@ input{
 button{
 
     width:100%;
-    padding:13px;
 
-    margin:6px 0;
+    padding:12px;
 
-    border:none;
+    margin:5px 0;
+
+    border:0;
+
     border-radius:10px;
 
     background:#1976d2;
+
     color:white;
 
     font-size:16px;
@@ -89,8 +98,12 @@ button:active{
 header{
 
     display:flex;
+
     justify-content:space-between;
+
     align-items:center;
+
+    padding:10px;
 
 }
 
@@ -99,22 +112,26 @@ header{
 header button{
 
     width:auto;
+
     padding:8px 15px;
 
 }
 
 
 
-nav{
+.menu{
 
     display:flex;
+
     gap:5px;
+
+    padding:5px;
 
 }
 
 
 
-nav button{
+.menu button{
 
     font-size:14px;
 
@@ -122,12 +139,13 @@ nav button{
 
 
 
+
+
 section{
 
-    margin-top:15px;
+    padding:15px;
 
 }
-
 
 
 
@@ -140,17 +158,9 @@ section{
 
     margin:10px 0;
 
-    border-radius:15px;
+    border-radius:12px;
 
-    box-shadow:0 2px 5px #ddd;
-
-}
-
-
-
-.customer h4{
-
-    margin:0 0 10px;
+    box-shadow:0 2px 6px #ddd;
 
 }
 
@@ -166,7 +176,7 @@ section{
 
 
 
-.status-red{
+.red{
 
     border-left:6px solid red;
 
@@ -174,7 +184,7 @@ section{
 
 
 
-.status-green{
+.green{
 
     border-left:6px solid green;
 
@@ -182,7 +192,7 @@ section{
 
 
 
-.status-yellow{
+.yellow{
 
     border-left:6px solid orange;
 
@@ -191,15 +201,16 @@ section{
 
 
 
-.stat-box{
+
+.info{
 
     background:white;
 
     padding:15px;
 
-    border-radius:12px;
-
     margin:10px 0;
+
+    border-radius:12px;
 
 }
 
