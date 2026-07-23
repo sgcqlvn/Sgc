@@ -296,29 +296,45 @@ function showAddCustomer(){
 
 
 
-    let customer = {
+    let today =
+new Date()
+.toLocaleDateString("vi-VN");
 
-        id: Date.now(),
 
-        name: name,
+let customer = {
 
-        phone: phone,
+    id: Date.now(),
 
-        loan: loan,
+    name: name,
 
-        daily: daily,
+    phone: phone,
 
-        paid: 0,
+    loan: loan,
 
-        profit: 0,
+    daily: daily,
 
-        startDate:
-        new Date()
-        .toLocaleDateString("vi-VN"),
+    paid: 0,
 
-        history: [],
+    profit: 0,
 
-        mergeHistory: []
+
+    // ngày mượn ban đầu (giữ nguyên)
+    loanDate: today,
+
+
+    // lần dồn gần nhất
+    lastMergeDate: "",
+
+
+    // ngày bắt đầu dây hiện tại
+    cycleDate: today,
+
+
+    history: [],
+
+    mergeHistory: []
+
+};
 
     };
 
@@ -410,7 +426,20 @@ function renderCustomers(){
             <p>
             Tiền vay:
             ${c.loan.toLocaleString()} đ
-            </p>
+            </p><p>
+📅 Ngày mượn:
+${c.loanDate || ""}
+</p>
+
+<p>
+🔄 Dây hiện tại:
+${c.cycleDate || ""}
+</p>
+
+<p>
+🔁 Lần dồn gần nhất:
+${c.lastMergeDate || "Chưa dồn"}
+</p>
 
 
             <p>
@@ -456,6 +485,9 @@ ${statusText(c)}
             </div>
 
             `;
+            <button onclick="deleteCustomer(${index})">
+🗑 Xóa khách
+</button>
 
 
         }
@@ -1469,6 +1501,13 @@ function deleteCustomer(index){
 
 
     renderCustomers();
+    alert(
+
+        "Đã xóa khách"
+
+    );
+
+}
 
 
 }// ===============================
