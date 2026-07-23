@@ -1,0 +1,275 @@
+*{
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+
+body{
+    margin:0;
+    background:#f2f4f7;
+    color:#222;
+}
+
+
+/* Ẩn trang */
+
+.hidden{
+    display:none !important;
+}
+
+
+.page{
+    min-height:100vh;
+}
+
+
+
+/* Logo đăng nhập */
+
+.logo{
+    text-align:center;
+    padding-top:60px;
+}
+
+
+.logo h1{
+    font-size:45px;
+    color:#1976d2;
+    margin-bottom:5px;
+}
+
+
+.logo p{
+    color:#666;
+}
+
+
+
+
+
+/* Khung */
+
+.box{
+
+    background:white;
+    width:90%;
+    max-width:400px;
+
+    margin:30px auto;
+
+    padding:20px;
+
+    border-radius:15px;
+
+    box-shadow:0 3px 10px #0002;
+
+}
+
+
+
+
+input{
+
+    width:100%;
+
+    padding:14px;
+
+    margin:8px 0;
+
+    border-radius:10px;
+
+    border:1px solid #ddd;
+
+    font-size:16px;
+
+}
+
+
+
+
+
+button{
+
+    width:100%;
+
+    padding:14px;
+
+    margin-top:10px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#1976d2;
+
+    color:white;
+
+    font-size:16px;
+
+}
+
+
+
+button.create{
+
+    background:#43a047;
+
+}
+
+
+
+
+
+
+/* Header */
+
+header{
+
+    background:#1976d2;
+
+    color:white;
+
+    padding:15px;
+
+    text-align:center;
+
+}
+
+
+
+
+
+
+/* Menu */
+
+.menu{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:5px;
+
+    padding:10px;
+
+    background:white;
+
+}
+
+
+
+.menu button{
+
+    font-size:13px;
+
+    padding:12px 5px;
+
+}
+
+
+
+
+
+
+/* Nội dung */
+
+.content{
+
+    padding:15px;
+
+}
+
+
+
+
+.content h3{
+
+    margin-top:5px;
+
+}
+
+
+
+
+
+
+/* Thẻ khách */
+
+.customer-card{
+
+    background:white;
+
+    border-radius:12px;
+
+    padding:15px;
+
+    margin-bottom:12px;
+
+    box-shadow:0 2px 8px #0001;
+
+}
+
+
+
+.customer-card h4{
+
+    margin:0 0 8px 0;
+
+}
+
+
+
+
+
+.status-paid{
+
+    border-left:6px solid #43a047;
+
+}
+
+
+
+.status-unpaid{
+
+    border-left:6px solid #e53935;
+
+}
+
+
+
+.status-done{
+
+    border-left:6px solid #fbc02d;
+
+}
+
+
+
+
+
+
+/* Thống kê */
+
+.stat-box{
+
+    background:white;
+
+    padding:15px;
+
+    border-radius:12px;
+
+    margin-bottom:10px;
+
+}
+
+
+
+.stat-box span{
+
+    float:right;
+
+    font-weight:bold;
+
+    color:#1976d2;
+
+}
