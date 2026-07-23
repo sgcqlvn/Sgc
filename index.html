@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SGC Quản Lý</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<!-- MÀN HÌNH ĐĂNG NHẬP -->
+
+<div id="loginPage" class="page">
+
+<div class="logo">
+<h1>SGC</h1>
+<p>Sổ Góp Quản Lý</p>
+</div>
+
+
+<div class="box">
+
+<h2>Đăng nhập</h2>
+
+<input id="username" placeholder="Tên tài khoản">
+
+<input id="password" type="password" placeholder="Mật khẩu">
+
+
+<button onclick="login()">
+Đăng nhập
+</button>
+
+
+<button class="create"
+onclick="createBook()">
+
+Tạo sổ mới
+
+</button>
+
+</div>
+
+</div>
+
+
+
+<!-- TRANG CHÍNH -->
+
+<div id="mainPage" class="page hidden">
+
+
+<header>
+
+<h2>SGC</h2>
+
+</header>
+
+
+
+<div class="menu">
+
+
+<button onclick="openPage('customers')">
+👥 Khách
+</button>
+
+
+<button onclick="openPage('collect')">
+💰 Thu tiền
+</button>
+
+
+<button onclick="openPage('stats')">
+📊 Thống kê
+</button>
+
+
+<button onclick="openPage('settings')">
+⚙️ Cài đặt
+</button>
+
+
+</div>
+
+
+
+
+<!-- KHÁCH -->
+
+<section id="customers"
+class="content">
+
+
+<h3>Danh sách khách</h3>
+
+
+<button onclick="showAddCustomer()">
+
++ Thêm khách
+
+</button>
+
+
+<div id="customerList">
+
+</div>
+
+
+</section>
+
+
+
+
+
+<!-- THU TIỀN -->
+
+<section id="collect"
+class="content hidden">
+
+<h3>
+Thu tiền
+</h3>
+
+
+<p>
+Chức năng thu tiền sẽ thêm ở phần sau.
+</p>
+
+
+</section>
+
+
+
+
+
+
+<!-- THỐNG KÊ -->
+
+<section id="stats"
+class="content hidden">
+
+<h3>
+Thống kê
+</h3>
+
+
+<p>
+Tổng thu hôm nay:
+<span id="todayIncome">
+0
+</span>
+</p>
+
+
+<p>
+Tổng thu tháng:
+<span id="monthIncome">
+0
+</span>
+</p>
+
+
+<p>
+Tổng dồn hôm nay:
+<span id="todayMerge">
+0
+</span>
+</p>
+
+
+<p>
+Tổng dồn tháng:
+<span id="monthMerge">
+0
+</span>
+</p>
+
+
+<p>
+Tổng lời hôm nay:
+<span id="todayProfit">
+0
+</span>
+</p>
+
+
+<p>
+Tổng lời tháng:
+<span id="monthProfit">
+0
+</span>
+</p>
+
+
+</section>
+
+
+
+
+
+
+
+<!-- CÀI ĐẶT -->
+
+<section id="settings"
+class="content hidden">
+
+
+<h3>
+Cài đặt
+</h3>
+
+
+<p>
+Quản lý sổ và tài khoản
+</p>
+
+
+</section>
+
+
+
+</div>
+
+
+
+<script src="app.js"></script>
+
+</body>
+</html>
