@@ -1,0 +1,213 @@
+*{
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+
+body{
+
+    margin:0;
+    background:#f2f3f5;
+    color:#222;
+
+}
+
+
+
+#loginPage,
+#mainPage{
+
+    max-width:500px;
+    margin:auto;
+    padding:20px;
+
+}
+
+
+
+#loginPage{
+
+    text-align:center;
+    padding-top:80px;
+
+}
+
+
+
+h1{
+
+    font-size:50px;
+    margin-bottom:5px;
+
+}
+
+
+
+input{
+
+    width:100%;
+    padding:14px;
+    margin:8px 0;
+
+    border:1px solid #ccc;
+    border-radius:10px;
+
+    font-size:16px;
+
+}
+
+
+
+button{
+
+    width:100%;
+    padding:13px;
+
+    margin:6px 0;
+
+    border:none;
+    border-radius:10px;
+
+    background:#1976d2;
+    color:white;
+
+    font-size:16px;
+
+}
+
+
+
+button:active{
+
+    transform:scale(.98);
+
+}
+
+
+
+
+header{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+}
+
+
+
+header button{
+
+    width:auto;
+    padding:8px 15px;
+
+}
+
+
+
+nav{
+
+    display:flex;
+    gap:5px;
+
+}
+
+
+
+nav button{
+
+    font-size:14px;
+
+}
+
+
+
+section{
+
+    margin-top:15px;
+
+}
+
+
+
+
+
+.customer{
+
+    background:white;
+
+    padding:15px;
+
+    margin:10px 0;
+
+    border-radius:15px;
+
+    box-shadow:0 2px 5px #ddd;
+
+}
+
+
+
+.customer h4{
+
+    margin:0 0 10px;
+
+}
+
+
+
+.customer button{
+
+    font-size:14px;
+
+}
+
+
+
+
+
+.status-red{
+
+    border-left:6px solid red;
+
+}
+
+
+
+.status-green{
+
+    border-left:6px solid green;
+
+}
+
+
+
+.status-yellow{
+
+    border-left:6px solid orange;
+
+}
+
+
+
+
+.stat-box{
+
+    background:white;
+
+    padding:15px;
+
+    border-radius:12px;
+
+    margin:10px 0;
+
+}
+
+
+
+
+.hidden{
+
+    display:none;
+
+}
