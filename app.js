@@ -484,8 +484,11 @@ ${statusText(c)}
 
             </div>
 
-            `;
-            <button onclick="deleteCustomer(${index})">
+            `;<button onclick="editCustomer(${index})">
+✏️ Sửa
+</button>
+
+<button onclick="deleteCustomer(${index})">
 🗑 Xóa khách
 </button>
 
