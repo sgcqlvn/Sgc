@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SGC Quản Lý</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+
+<!-- ĐĂNG NHẬP -->
+
+<div id="loginPage">
+
+<h1>SGC</h1>
+<p>Sổ Quản Lý</p>
+
+
+<input id="username" placeholder="Tên tài khoản">
+
+<input id="password" type="password" placeholder="Mật khẩu">
+
+
+<button onclick="login()">
+Đăng nhập
+</button>
+
+
+<button onclick="createBook()">
+Tạo sổ mới
+</button>
+
+
+</div>
+
+
+
+
+
+<!-- TRANG CHÍNH -->
+
+<div id="mainPage" class="hidden">
+
+
+<header>
+
+<h2 id="bookTitle">
+SGC
+</h2>
+
+
+<button onclick="logout()">
+Đăng xuất
+</button>
+
+</header>
+
+
+
+<nav>
+
+<button onclick="showPage('customers')">
+👥 Khách
+</button>
+
+
+<button onclick="showPage('stats')">
+📊 Thống kê
+</button>
+
+
+<button onclick="showPage('settings')">
+⚙️ Cài đặt
+</button>
+
+</nav>
+
+
+
+
+
+
+<!-- KHÁCH -->
+
+<section id="customers">
+
+
+<h3>Danh sách khách</h3>
+
+
+<button onclick="addCustomer()">
++ Thêm khách
+</button>
+
+
+<input 
+id="search"
+placeholder="Tìm khách..."
+oninput="searchCustomer()"
+>
+
+
+<div id="customerList">
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+<!-- THỐNG KÊ -->
+
+<section id="stats" class="hidden">
+
+
+<h3>Thống kê</h3>
+
+
+<p>
+Tổng thu hôm nay:
+<span id="todayIncome">0</span>
+</p>
+
+
+<p>
+Tổng thu tháng:
+<span id="monthIncome">0</span>
+</p>
+
+
+<p>
+Tổng dồn hôm nay:
+<span id="todayMerge">0</span>
+</p>
+
+
+<p>
+Tổng dồn tháng:
+<span id="monthMerge">0</span>
+</p>
+
+
+<p>
+Tổng lời hôm nay:
+<span id="todayProfit">0</span>
+</p>
+
+
+<p>
+Tổng lời tháng:
+<span id="monthProfit">0</span>
+</p>
+
+
+</section>
+
+
+
+
+
+
+
+
+<!-- CÀI ĐẶT -->
+
+<section id="settings" class="hidden">
+
+
+<h3>Cài đặt</h3>
+
+
+<button onclick="changePassword()">
+Đổi mật khẩu
+</button>
+
+
+<button onclick="backupData()">
+Sao lưu
+</button>
+
+
+</section>
+
+
+
+</div>
+
+
+
+
+<script src="app.js"></script>
+
+</body>
+</html>
