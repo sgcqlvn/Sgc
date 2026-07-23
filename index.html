@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SGC Quản Lý</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    margin:0;
+    background:#f5f5f5;
+}
+header{
+    background:#1976d2;
+    color:white;
+    padding:18px;
+    text-align:center;
+    font-size:24px;
+    font-weight:bold;
+}
+.container{
+    padding:15px;
+}
+.card{
+    background:white;
+    padding:15px;
+    border-radius:12px;
+    margin-bottom:15px;
+    box-shadow:0 2px 8px #ccc;
+}
+input,button{
+    width:100%;
+    padding:12px;
+    margin-top:8px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    box-sizing:border-box;
+}
+button{
+    background:#1976d2;
+    color:white;
+    border:none;
+    font-size:16px;
+}
+.delete{
+    background:#d32f2f;
+}
+.edit{
+    background:#388e3c;
+}
+.customer{
+    border-left:5px solid #1976d2;
+}
+.hidden{
+    display:none;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+SGC Quản Lý
+</header>
+
+<div class="container">
+
+<div class="card">
+<h3>Thêm khách hàng</h3>
+
+<input id="name" placeholder="Tên khách">
+<input id="loan" type="number" placeholder="Số tiền vay">
+<input id="daily" type="number" placeholder="Tiền đóng mỗi ngày">
+<input id="phone" placeholder="Số điện thoại">
+
+<button onclick="addCustomer()">
++ Thêm khách
+</button>
+
+</div>
+
+
+<div class="card">
+<h3>Danh sách khách</h3>
+<div id="list"></div>
+</div>
+
+</div>
+
+
+<script>
+
+let customers = JSON.parse(localStorage.getItem("sgc_customers")) || [];
+
+let editIndex = -1;
+
+
+function save(){
+    localStorage.setItem(
+        "sgc_customers",
+        JSON.stringify(customers)
+    );
+}
+
+
+function renderCustomers(){
+
+    let list=document.getElementById("list");
+
+    list.innerHTML="";
+
+    if(customers.length===0){
+        list.innerHTML="<p>Chưa có khách hàng</p>";
+        return;
+    }
+
+
+    customers.forEach((c,i)=>{
+
+        list.innerHTML += `
+
+        <div class="card customer">
+
+        <h3>${c.name}</h3>
+
+        <p>Vay: ${Number(c.loan).toLocaleString()} đ</p>
+
+        <p>Đóng ngày: ${Number(c.daily).toLocaleString()} đ</p>
+
+        <p>☎ ${c.phone}</p>
+
+
+        <button class="edit" onclick="editCustomer(${i})">
+        Sửa
+        </button>
+
+        <button class="delete" onclick="deleteCustomer(${i})">
+        Xoá
+        </button>
+
+
+        </div>
+
+        `;
+
+    });
+
+}
+
+
+
+function addCustomer(){
+
+let name=document.getElementById("name").value;
+let loan=document.getElementById("loan").value;
+let daily=document.getElementById("daily").value;
+let phone=document.getElementById("phone").value;
+
+
+if(!name || !loan){
+
+alert("Nhập tên và số tiền vay");
+
+return;
+
+}
+
+
+let data={
+name,
+loan,
+daily,
+phone
+};
+
+
+if(editIndex==-1){
+
+customers.push(data);
+
+}else{
+
+customers[editIndex]=data;
+
+editIndex=-1;
+
+}
+
+
+save();
+
+renderCustomers();
+
+
+document.querySelectorAll("input")
+.forEach(x=>x.value="");
+
+
+}
+
+
+
+function editCustomer(i){
+
+let c=customers[i];
+
+document.getElementById("name").value=c.name;
+document.getElementById("loan").value=c.loan;
+document.getElementById("daily").value=c.daily;
+document.getElementById("phone").value=c.phone;
+
+
+editIndex=i;
+
+
+window.scrollTo(0,0);
+
+}
+
+
+
+function deleteCustomer(i){
+
+if(confirm("Xoá khách này?")){
+
+customers.splice(i,1);
+
+save();
+
+renderCustomers();
+
+}
+
+}
+
+
+
+renderCustomers();
+
+
+</script>
+
+</body>
+</html>
