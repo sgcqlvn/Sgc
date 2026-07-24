@@ -709,7 +709,31 @@ window.collectMoney = async function(id){
 
 
 
-    c.paid += money;
+   c.paid = (c.paid || 0) + money;
+
+
+if(!c.history)
+c.history=[];
+
+
+c.history.push({
+
+    type:"thu",
+
+    amount:money,
+
+    date:date
+
+});
+
+
+await updateCustomer(
+    id,
+    c
+);
+
+
+await loadCustomers();
 
 
 
@@ -734,10 +758,7 @@ c.history.push({
     );
 
 
-
-    loadCustomers();
-
-
+await loadCustomers();
 
 };
 
@@ -857,12 +878,6 @@ c.cycleDate = date;
 c.lastMergeDate = date;
 
 
-    await updateCustomer(
-        id,
-        c
-    );
-
-
 
     alert(
         "Dồn thành công\n"+
@@ -872,9 +887,13 @@ c.lastMergeDate = date;
         "Đã lên dây mới"
     );
 
+  await updateCustomer(
+        id,
+        c
+    );
 
 
-    loadCustomers();
+    await loadCustomers();
 
 
 };
@@ -1278,8 +1297,6 @@ document
 .classList.remove("hidden");
 
 
-};window.testLogin=function(){
 
-alert("Nút hoạt động");
 
 }
