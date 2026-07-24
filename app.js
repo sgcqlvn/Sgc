@@ -3,7 +3,7 @@
 // PHẦN 1/3
 // FIREBASE AUTH + FIRESTORE
 // =====================================
-alert("app chạy");
+
 
 import { auth, db } from "./firebase.js";
 
@@ -436,41 +436,29 @@ window.addCustomer = async function(){
 
     let customer={
 
+    name:name,
 
-        name:name,
+    phone:phone || "",
 
-        phone:phone || "",
+    loan:loan || 0,
 
-        loan:loan || 0,
+    daily:daily || 0,
 
-        daily:daily || 0,
+    paid:0,
 
-        paid:0,
+    profit:0,
 
-        profit:0,
+    loanDate:date,
 
-        loanDate:date,
+    cycleDate:date,
 
-        cycleDate:date,
+    lastMergeDate:"",
 
-        lastMergeDate:"",
+    history:[],
 
-        history:[]
-        cycles:[]
-
-    };
-
-
-
-    await saveCustomer(customer);
-
-
-
-    loadCustomers();
-
+    cycles:[]
 
 };
-
 
 
 
