@@ -3,7 +3,7 @@
 // PHẦN 1/3
 // FIREBASE AUTH + FIRESTORE
 // =====================================
-
+alert("app chạy");
 
 import { auth, db } from "./firebase.js";
 
