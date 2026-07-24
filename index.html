@@ -84,9 +84,7 @@ SGC
 
 <section id="customers">
 
-
 <h3>Khách hàng</h3>
-
 
 <input 
 id="searchBox"
@@ -94,19 +92,31 @@ placeholder="Tìm khách..."
 oninput="searchCustomer()"
 >
 
-
 <button onclick="addCustomer()">
 + Thêm khách
 </button>
-
 
 <div id="customerList">
 
 </div>
 
-
 </section>
 
+
+<section id="customerDetail" class="hidden">
+
+<h3>Chi tiết khách</h3>
+
+<div id="detailContent">
+
+</div>
+
+
+<button onclick="closeDetail()">
+⬅ Quay lại
+</button>
+
+</section>
 
 
 
