@@ -713,16 +713,19 @@ window.collectMoney = async function(id){
 
 
 
-    c.history.push({
+    if(!c.history)
+c.history=[];
 
-        type:"thu",
 
-        amount:money,
+c.history.push({
 
-        date:date
+    type:"thu",
 
-    });
+    amount:money,
 
+    date:date
+
+});
 
 
     await updateCustomer(
