@@ -758,7 +758,7 @@ window.collectMoney = async function(id){
 
 // ================================
 // DỒN TIỀN
-// ================================window.mergeMoney = async function(id){
+// ================================
 
     window.mergeMoney = async function(id){
 
@@ -857,30 +857,13 @@ c.history.push({
     profit:profit
 
 });
-        // Tạo dây mới
+      // ===== LÊN DÂY MỚI =====
 
 c.paid = 0;
 
 c.cycleDate = date;
 
 c.lastMergeDate = date;
-
-
-    // ===== LÊN DÂY MỚI =====
-
-
-    c.paid = 0;
-
-c.cycleDate = date;
-
-c.lastMergeDate = date;
-
-
-    c.cycleDate = date;
-
-
-    c.lastMergeDate = date;
-
 
 
     await updateCustomer(
