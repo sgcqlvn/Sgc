@@ -1135,7 +1135,50 @@ ${(c.profit||0).toLocaleString()} đ
 
 <hr>
 
+html += `
 
+<hr>
+
+<h4>
+📚 Các dây cũ
+</h4>
+
+`;
+
+
+
+(c.cycles || []).forEach((d,index)=>{
+
+html += `
+
+<p>
+<b>Dây ${index+1}</b>
+
+<br>
+Từ:
+${d.startDate}
+
+<br>
+Đến:
+${d.endDate}
+
+<br>
+Đã đóng:
+${d.totalPaid.toLocaleString()} đ
+
+<br>
+Dồn:
+${d.mergeAmount.toLocaleString()} đ
+
+<br>
+Lời:
+${d.profit.toLocaleString()} đ
+
+</p>
+
+`;
+
+});
 <h4>
 📌 Lịch sử đóng tiền
 </h4>
@@ -1191,7 +1234,25 @@ html += `
 
 
 let don=false;
+// Lưu dây cũ
 
+if(!c.cycles)
+c.cycles=[];
+
+
+c.cycles.push({
+
+    startDate:c.cycleDate,
+
+    endDate:date,
+
+    totalPaid:totalPaid,
+
+    mergeAmount:mergeAmount,
+
+    profit:profit
+
+});
 
 (c.history||[]).forEach(h=>{
 
