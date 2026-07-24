@@ -222,3 +222,14 @@ section{
     display:none;
 
 }
+.customer.paid{
+    background:#b7ffb7;
+}
+
+.customer.unpaid{
+    background:#ffb7b7;
+}
+
+.customer.done{
+    background:#fff2a8;
+}
