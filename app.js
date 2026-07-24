@@ -529,9 +529,11 @@ window.renderCustomers=function(){
         <div class="customer">
 
 
-        <h4>
-        ${c.name}
-        </h4>
+      <h4 onclick="openCustomerDetail('${c.id}')">
+
+${c.name}
+
+</h4>
 
 
         <p>
