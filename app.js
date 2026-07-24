@@ -48,11 +48,13 @@ let customers = [];
 
 function convertEmail(username){
 
-    return username
+    username = username
     .trim()
     .toLowerCase()
-    .replace(/\s+/g,"")
-    +"@sgc.vn";
+    .replace(/[^a-z0-9]/g,"");
+
+
+    return username + "@sgcvn.com";
 
 }
 
@@ -84,7 +86,9 @@ window.createBook = async function(){
 
     try{
 
+        
         let email = convertEmail(username);
+        alert(email);
 
 
 
