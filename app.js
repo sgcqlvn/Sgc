@@ -62,20 +62,12 @@ function convertEmail(username){
 
 window.createBook = async function(){
 
+    let username = prompt("Tên tài khoản:");
 
-    let username =
-    prompt("Tên tài khoản:");
-
-
-
-    if(!username)
-    return;
+    if(!username) return;
 
 
-
-    let password =
-    prompt("Mật khẩu (ít nhất 6 ký tự):");
-
+    let password = prompt("Mật khẩu (ít nhất 6 ký tự):");
 
 
     if(!password || password.length < 6){
@@ -87,16 +79,15 @@ window.createBook = async function(){
     }
 
 
-
     try{
 
-
-        let email =
-        convertEmail(username);
+        let email = convertEmail(username);
 
 
 
-        let user =
+        // Tạo tài khoản Firebase
+
+        let userCredential =
         await createUserWithEmailAndPassword(
             auth,
             email,
@@ -104,21 +95,27 @@ window.createBook = async function(){
         );
 
 
+        let uid = userCredential.user.uid;
+
+
+
+        // Tạo sổ trong Firestore
 
         await setDoc(
 
             doc(
                 db,
                 "books",
-                user.user.uid
+                uid
             ),
 
             {
 
-                username:username,
+                username: username,
 
-                createdAt:
-                new Date()
+                createdAt: new Date(),
+
+                totalProfit: 0
 
             }
 
@@ -127,17 +124,17 @@ window.createBook = async function(){
 
 
         alert(
-        "Tạo sổ thành công"
+            "Tạo sổ thành công. Hãy đăng nhập!"
         );
 
 
 
     }
-    catch(e){
+    catch(error){
 
-        alert(
-        e.message
-        );
+
+        alert(error.message);
+
 
     }
 
