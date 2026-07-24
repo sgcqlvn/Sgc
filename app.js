@@ -48,11 +48,7 @@ let customers = [];
 
 function convertEmail(username){
 
-    return username
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g,"")
-    +"@sgc.vn";
+    return username.trim();
 
 }
 
