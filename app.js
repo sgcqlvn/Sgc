@@ -759,37 +759,42 @@ window.collectMoney = async function(id){
 
 window.mergeMoney = async function(id){
 
-
-    let c =
-    customers.find(
-        x=>x.id===id
+    let c = customers.find(
+        x => x.id === id
     );
 
 
-
-    if(!c)
-    return;
+    if(!c) return;
 
 
 
-    let money =
-    Number(
+    // Tổng tiền đã đóng trong dây hiện tại
+    let totalPaid = c.paid || 0;
+
+
+
+    if(totalPaid <= 0){
+
+        alert("Khách chưa có tiền đóng để dồn");
+
+        return;
+
+    }
+
+
+
+    let mergeAmount = Number(
         prompt(
-        "Số tiền dồn trả khách:"
+            "Số tiền khách dồn:"
         )
     );
 
 
 
-    if(!money)
-    return;
-
-
-
-    if(money > c.paid){
+    if(!mergeAmount || mergeAmount > totalPaid){
 
         alert(
-        "Số tiền dồn lớn hơn tiền đã đóng"
+            "Số tiền dồn không hợp lệ"
         );
 
         return;
@@ -798,8 +803,10 @@ window.mergeMoney = async function(id){
 
 
 
+    // Lời = tiền đã đóng - tiền dồn
+
     let profit =
-    c.paid - money;
+    totalPaid - mergeAmount;
 
 
 
@@ -809,18 +816,17 @@ window.mergeMoney = async function(id){
 
 
 
-    c.paid -= money;
+    // Cộng lời
+
+    c.profit =
+    (c.profit || 0) + profit;
 
 
 
-    c.profit += profit;
+    // Lưu lịch sử dồn
 
-
-
-    c.cycleDate=date;
-
-
-    c.lastMergeDate=date;
+    if(!c.history)
+    c.history=[];
 
 
 
@@ -828,13 +834,28 @@ window.mergeMoney = async function(id){
 
         type:"don",
 
-        amount:money,
+        date:date,
 
-        profit:profit,
+        oldPaid:totalPaid,
 
-        date:date
+        amount:mergeAmount,
+
+        profit:profit
 
     });
+
+
+
+    // ===== LÊN DÂY MỚI =====
+
+
+    c.paid = 0;
+
+
+    c.cycleDate = date;
+
+
+    c.lastMergeDate = date;
 
 
 
@@ -845,8 +866,17 @@ window.mergeMoney = async function(id){
 
 
 
-    loadCustomers();
+    alert(
+        "Dồn thành công\n"+
+        "Lời: "+
+        profit.toLocaleString()+
+        " đ\n"+
+        "Đã lên dây mới"
+    );
 
+
+
+    loadCustomers();
 
 
 };
