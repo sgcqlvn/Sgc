@@ -760,7 +760,7 @@ window.collectMoney = async function(id){
 // DỒN TIỀN
 // ================================
 
-    window.mergeMoney = async function(id){
+window.mergeMoney = async function(id){
 
     let c = customers.find(
         x => x.id === id
