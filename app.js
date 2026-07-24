@@ -758,9 +758,9 @@ window.collectMoney = async function(id){
 
 // ================================
 // DỒN TIỀN
-// ================================
+// ================================window.mergeMoney = async function(id){
 
-window.mergeMoney = async function(id){
+    window.mergeMoney = async function(id){
 
     let c = customers.find(
         x => x.id === id
@@ -769,28 +769,9 @@ window.mergeMoney = async function(id){
 
     if(!c) return;
 
-if(!c.cycles)
-c.cycles=[];
-
-
-c.cycles.push({
-
-    startDate:c.cycleDate,
-
-    endDate:date,
-
-    totalPaid:totalPaid,
-
-    mergeAmount:mergeAmount,
-
-    profit:profit
-
-});
 
     // Tổng tiền đã đóng trong dây hiện tại
     let totalPaid = c.paid || 0;
-    c.cycleDate = date;
-
 
 
     if(totalPaid <= 0){
@@ -813,65 +794,86 @@ c.cycles.push({
 
     if(!mergeAmount || mergeAmount > totalPaid){
 
-        alert(
-            "Số tiền dồn không hợp lệ"
-        );
+    alert(
+        "Số tiền dồn không hợp lệ"
+    );
 
-        return;
+    return;
 
-    }
-
-
-
-    // Lời = tiền đã đóng - tiền dồn
-
-    let profit =
-    totalPaid - mergeAmount;
+}
 
 
 
-    let date =
-    new Date()
-    .toLocaleDateString("vi-VN");
+// Lời = tiền đã đóng - tiền dồn
+
+let profit =
+totalPaid - mergeAmount;
 
 
 
-    // Cộng lời
-
-    c.profit =
-    (c.profit || 0) + profit;
-
-
-
-    // Lưu lịch sử dồn
-
-    if(!c.history)
-    history:[],
-
-cycles:[];
+let date =
+new Date()
+.toLocaleDateString("vi-VN");
 
 
 
-    c.history.push({
+// Lưu dây cũ
 
-        type:"don",
+if(!c.cycles)
+c.cycles=[];
 
-        date:date,
 
-        oldPaid:totalPaid,
+c.cycles.push({
 
-        amount:mergeAmount,
+    startDate:c.cycleDate,
 
-        profit:profit
+    endDate:date,
 
-    });
+    totalPaid:totalPaid,
 
+    mergeAmount:mergeAmount,
+
+    profit:profit
+
+});
+
+
+// Lưu lịch sử dồn
+
+if(!c.history)
+c.history=[];
+
+
+c.history.push({
+
+    type:"don",
+
+    date:date,
+
+    oldPaid:totalPaid,
+
+    amount:mergeAmount,
+
+    profit:profit
+
+});
+        // Tạo dây mới
+
+c.paid = 0;
+
+c.cycleDate = date;
+
+c.lastMergeDate = date;
 
 
     // ===== LÊN DÂY MỚI =====
 
 
     c.paid = 0;
+
+c.cycleDate = date;
+
+c.lastMergeDate = date;
 
 
     c.cycleDate = date;
