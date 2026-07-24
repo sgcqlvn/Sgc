@@ -456,6 +456,7 @@ window.addCustomer = async function(){
         lastMergeDate:"",
 
         history:[]
+        cycles:[]
 
     };
 
@@ -768,10 +769,27 @@ window.mergeMoney = async function(id){
 
     if(!c) return;
 
+if(!c.cycles)
+c.cycles=[];
 
+
+c.cycles.push({
+
+    startDate:c.cycleDate,
+
+    endDate:date,
+
+    totalPaid:totalPaid,
+
+    mergeAmount:mergeAmount,
+
+    profit:profit
+
+});
 
     // Tổng tiền đã đóng trong dây hiện tại
     let totalPaid = c.paid || 0;
+    c.cycleDate = date;
 
 
 
@@ -1132,8 +1150,7 @@ ${c.cycleDate || ""}
 ${(c.profit||0).toLocaleString()} đ
 </p>
 
-
-<hr>
+`;
 
 html += `
 
@@ -1145,48 +1162,59 @@ html += `
 
 `;
 
-
-
 (c.cycles || []).forEach((d,index)=>{
+
 
 html += `
 
-<p>
+<div>
+
 <b>Dây ${index+1}</b>
 
-<br>
-Từ:
+<p>
+📅 Từ:
 ${d.startDate}
-
-<br>
-Đến:
-${d.endDate}
-
-<br>
-Đã đóng:
-${d.totalPaid.toLocaleString()} đ
-
-<br>
-Dồn:
-${d.mergeAmount.toLocaleString()} đ
-
-<br>
-Lời:
-${d.profit.toLocaleString()} đ
-
 </p>
+
+
+<p>
+🏁 Đến:
+${d.endDate}
+</p>
+
+
+<p>
+💵 Đã đóng:
+${d.totalPaid.toLocaleString()} đ
+</p>
+
+
+<p>
+🔄 Đã dồn:
+${d.mergeAmount.toLocaleString()} đ
+</p>
+
+
+<p>
+⭐ Lời:
+${d.profit.toLocaleString()} đ
+</p>
+<hr>
+
+</div>
 
 `;
 
 });
+    html += `
+
+<hr>
+
 <h4>
 📌 Lịch sử đóng tiền
 </h4>
 
 `;
-
-
-
 let thu=false;
 
 
@@ -1210,18 +1238,12 @@ ${h.amount.toLocaleString()} đ
     }
 
 });
-
-
-
 if(!thu){
 
 html += "<p>Chưa có lịch sử đóng</p>";
+    
 
-}
-
-
-
-html += `
+}html += `
 
 <hr>
 
@@ -1231,28 +1253,8 @@ html += `
 
 `;
 
-
-
 let don=false;
-// Lưu dây cũ
 
-if(!c.cycles)
-c.cycles=[];
-
-
-c.cycles.push({
-
-    startDate:c.cycleDate,
-
-    endDate:date,
-
-    totalPaid:totalPaid,
-
-    mergeAmount:mergeAmount,
-
-    profit:profit
-
-});
 
 (c.history||[]).forEach(h=>{
 
@@ -1260,12 +1262,10 @@ c.cycles.push({
 
         don=true;
 
-
         html += `
 
 <p>
 ${h.date}
-
 <br>
 Dồn:
 ${h.amount.toLocaleString()} đ
@@ -1286,22 +1286,10 @@ if(!don){
 
 html += "<p>Chưa có lịch sử dồn</p>";
 
-}
-
-
-
-document
+}document
 .getElementById("detailContent")
 .innerHTML=html;
-
-
-};
-
-
-
-
-
-window.closeDetail=function(){
+    };window.closeDetail=function(){
 
 
 document
