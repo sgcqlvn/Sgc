@@ -517,116 +517,105 @@ window.addCustomer = async function(){
 // HIỂN THỊ KHÁCH
 // ================================
 
-window.renderCustomers=function(){
+window.renderCustomers = function(){
 
+    let box = document.getElementById("customerList");
 
-    let box =
-    document.getElementById(
-        "customerList"
-    );
-
-
-
-    if(!box)
-    return;
-
-
+    if(!box) return;
 
     box.innerHTML="";
 
-
+    let today =
+    new Date().toLocaleDateString("vi-VN");
 
     let search =
-    document
-    .getElementById(
-        "searchBox"
-    )
+    document.getElementById("searchBox")
     .value
     .toLowerCase();
 
-
-
     customers.forEach(c=>{
-
 
         if(
             search &&
-            !c.name
-            .toLowerCase()
-            .includes(search)
-        )
-        return;
+            !c.name.toLowerCase().includes(search)
+        ) return;
 
+        let status="unpaid";
+        let text="🔴 Chưa đóng hôm nay";
 
+        if((c.paid||0) >= (c.loan||0)){
+
+            status="done";
+            text="🟡 Đã góp xong";
+
+        }else{
+
+            let paidToday =
+            (c.history||[]).some(h=>
+
+                h.type==="thu" &&
+                h.date===today
+
+            );
+
+            if(paidToday){
+
+                status="paid";
+                text="🟢 Đã đóng hôm nay";
+
+            }
+
+        }
 
         box.innerHTML += `
 
-
-<div class="customer">
-
+<div class="customer ${status}">
 
 <h4 onclick="openCustomerDetail('${c.id}')">
-
 ${c.name}
-
 </h4>
 
+<p>${text}</p>
 
 <p>
-💰 Vay:
+💰 Tiền vay:
 ${(c.loan||0).toLocaleString()} đ
 </p>
 
+<p>
+💵 Góp/ngày:
+${(c.daily||0).toLocaleString()} đ
+</p>
 
 <p>
 💵 Đã đóng:
 ${(c.paid||0).toLocaleString()} đ
 </p>
 
-
 <p>
 ⭐ Lời:
 ${(c.profit||0).toLocaleString()} đ
 </p>
 
-
-
 <button onclick="collectMoney('${c.id}')">
-
 Thu tiền
-
 </button>
-
-
 
 <button onclick="mergeMoney('${c.id}')">
-
 Dồn tiền
-
 </button>
-
-
 
 <button onclick="deleteCustomer('${c.id}')">
-
 Xóa
-
 </button>
-
-
 
 </div>
 
-
 `;
-
-
 
     });
 
-
 };
-
 
 
 // ================================
