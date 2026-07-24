@@ -987,359 +987,176 @@ window.mergeMoney = async function(id){
 // MỞ CHI TIẾT KHÁCH
 // ================================
 
-window.openCustomerDetail=function(id){
+// ================================
+// CHI TIẾT KHÁCH
+// ================================
 
+window.openCustomerDetail = function(id){
 
-    let c =
-    customers.find(
-        x=>x.id===id
-    );
+    let c = customers.find(x => x.id === id);
 
+    if(!c) return;
 
-
-    if(!c)
-    return;
-
-
-
-
-    document
-    .getElementById("customers")
-    .classList.add("hidden");
-
-
-
-    document
-    .getElementById("customerDetail")
-    .classList.remove("hidden");
-
-
-
-
+    document.getElementById("customers").classList.add("hidden");
+    document.getElementById("customerDetail").classList.remove("hidden");
 
     let html = `
 
+<h2>${c.name}</h2>
 
-<h3>
-${c.name}
-</h3>
+<p><b>📞 Số điện thoại:</b> ${c.phone || "Chưa có"}</p>
 
+<p><b>💰 Tiền vay:</b> ${(c.loan || 0).toLocaleString()} đ</p>
 
-<p>
-💰 Tiền vay:
-${(c.loan||0).toLocaleString()} đ
-</p>
+<p><b>💵 Góp mỗi ngày:</b> ${(c.daily || 0).toLocaleString()} đ</p>
 
+<p><b>💵 Đã đóng:</b> ${(c.paid || 0).toLocaleString()} đ</p>
 
-<p>
-📅 Ngày mượn:
-${c.loanDate || ""}
-</p>
+<p><b>⭐ Tổng lời:</b> ${(c.profit || 0).toLocaleString()} đ</p>
 
+<p><b>📅 Ngày mượn:</b> ${c.loanDate || ""}</p>
 
-<p>
-💵 Góp mỗi ngày:
-${(c.daily||0).toLocaleString()} đ
-</p>
+<p><b>🔄 Dây hiện tại:</b> ${c.cycleDate || ""}</p>
 
-
-<p>
-🔄 Dây hiện tại:
-${c.cycleDate || ""}
-</p>
-
-
-<p>
-⭐ Tổng lời:
-${(c.profit||0).toLocaleString()} đ
-</p>
-
+<p><b>📌 Lần dồn gần nhất:</b> ${c.lastMergeDate || "Chưa có"}</p>
 
 <hr>
 
-
-<h4>
-📚 Các dây cũ
-</h4>
-
+<h3>📚 Các dây cũ</h3>
 
 `;
 
+    if((c.cycles || []).length===0){
 
+        html += "<p>Chưa có dây cũ</p>";
 
+    }else{
 
+        c.cycles.forEach((d,index)=>{
 
-// ================================
-// HIỆN DÂY CŨ
-// ================================
+            html += `
 
+<div class="oldCycle">
 
-let hasCycle=false;
+<b>Dây ${index+1}</b>
 
+<p>📅 Từ: ${d.startDate}</p>
 
+<p>🏁 Đến: ${d.endDate}</p>
 
-(c.cycles || []).forEach((d,index)=>{
+<p>💵 Đã đóng: ${(d.totalPaid||0).toLocaleString()} đ</p>
 
+<p>🔄 Đã dồn: ${(d.mergeAmount||0).toLocaleString()} đ</p>
 
-    hasCycle=true;
-
-
-
-    html += `
-
-
-<div>
-
-
-<b>
-Dây ${index+1}
-</b>
-
-
-<p>
-📅 Từ:
-${d.startDate}
-</p>
-
-
-<p>
-🏁 Đến:
-${d.endDate}
-</p>
-
-
-<p>
-💵 Đã đóng:
-${(d.totalPaid||0).toLocaleString()} đ
-</p>
-
-
-<p>
-🔄 Đã dồn:
-${(d.mergeAmount||0).toLocaleString()} đ
-</p>
-
-
-<p>
-⭐ Lời:
-${(d.profit||0).toLocaleString()} đ
-</p>
-
+<p>⭐ Lời: ${(d.profit||0).toLocaleString()} đ</p>
 
 <hr>
-
 
 </div>
 
-
 `;
 
-
-
-});
-
-
-
-if(!hasCycle){
-
-
-    html +=
-    "<p>Chưa có dây cũ</p>";
-
-
-
-}
-
-
-
-
-
-// ================================
-// LỊCH SỬ ĐÓNG TIỀN
-// ================================
-
-
-html += `
-
-
-<h4>
-📌 Lịch sử đóng tiền
-</h4>
-
-
-`;
-
-
-
-let hasThu=false;
-
-
-
-(c.history || []).forEach(h=>{
-
-
-    if(h.type==="thu"){
-
-
-        hasThu=true;
-
-
-
-        html += `
-
-
-<p>
-
-${h.date}
-
-<br>
-
-Đóng:
-${(h.amount||0).toLocaleString()} đ
-
-
-</p>
-
-
-`;
-
-
+        });
 
     }
 
+    html += `
 
+<h3>💵 Lịch sử đóng tiền</h3>
 
-});
+`;
 
+    let hasThu = false;
 
+    (c.history || []).forEach(h=>{
 
-if(!hasThu){
+        if(h.type==="thu"){
 
+            hasThu = true;
 
-    html +=
-    "<p>Chưa có lịch sử đóng</p>";
+            html += `
 
+<p>
 
+📅 ${h.date}
 
-}
+<br>
 
+Đóng: ${(h.amount||0).toLocaleString()} đ
 
+</p>
 
+`;
 
-// ================================
-// LỊCH SỬ DỒN
-// ================================
+        }
 
+    });
 
-html += `
+    if(!hasThu){
 
+        html += "<p>Chưa có lịch sử đóng tiền</p>";
+
+    }
+
+    html += `
 
 <hr>
 
-
-<h4>
-📌 Lịch sử dồn
-</h4>
-
+<h3>🔄 Lịch sử dồn tiền</h3>
 
 `;
 
+    let hasDon = false;
 
+    (c.history || []).forEach(h=>{
 
-let hasDon=false;
+        if(h.type==="don"){
 
+            hasDon = true;
 
-
-(c.history || []).forEach(h=>{
-
-
-    if(h.type==="don"){
-
-
-        hasDon=true;
-
-
-
-        html += `
-
+            html += `
 
 <p>
 
-${h.date}
+📅 ${h.date}
 
 <br>
 
-Dồn:
-${(h.amount||0).toLocaleString()} đ
-
+Đã đóng: ${(h.oldPaid||0).toLocaleString()} đ
 
 <br>
 
-Lời:
-${(h.profit||0).toLocaleString()} đ
+Dồn: ${(h.amount||0).toLocaleString()} đ
 
+<br>
+
+Lời: ${(h.profit||0).toLocaleString()} đ
 
 </p>
 
-
 `;
 
+        }
 
+    });
+
+    if(!hasDon){
+
+        html += "<p>Chưa có lịch sử dồn tiền</p>";
 
     }
 
-
-
-});
-
-
-
-if(!hasDon){
-
-
-    html +=
-    "<p>Chưa có lịch sử dồn</p>";
-
-
-
-}
-
-
-
-
-
-document
-.getElementById("detailContent")
-.innerHTML =
-html;
-
-
+    document.getElementById("detailContent").innerHTML = html;
 
 };
 
+window.closeDetail = function(){
 
+    document.getElementById("customerDetail").classList.add("hidden");
 
+    document.getElementById("customers").classList.remove("hidden");
 
-
-
-// ================================
-// ĐÓNG CHI TIẾT
-// ================================
-
-window.closeDetail=function(){
-
-
-
-    document
-    .getElementById("customerDetail")
-    .classList.add("hidden");
-
-
-
-    document
-    .getElementById("customers")
-    .classList.remove("hidden");
-
+};
 
 
 };
@@ -1682,173 +1499,3 @@ setTimeout(()=>{
     }
 
 },1000);
-// ================================
-// CHI TIẾT KHÁCH
-// ================================
-
-window.openCustomerDetail = function(id){
-
-    let c = customers.find(x => x.id === id);
-
-    if(!c) return;
-
-    document.getElementById("customers").classList.add("hidden");
-    document.getElementById("customerDetail").classList.remove("hidden");
-
-    let html = `
-
-<h2>${c.name}</h2>
-
-<p><b>📞 Số điện thoại:</b> ${c.phone || "Chưa có"}</p>
-
-<p><b>💰 Tiền vay:</b> ${(c.loan || 0).toLocaleString()} đ</p>
-
-<p><b>💵 Góp mỗi ngày:</b> ${(c.daily || 0).toLocaleString()} đ</p>
-
-<p><b>💵 Đã đóng:</b> ${(c.paid || 0).toLocaleString()} đ</p>
-
-<p><b>⭐ Tổng lời:</b> ${(c.profit || 0).toLocaleString()} đ</p>
-
-<p><b>📅 Ngày mượn:</b> ${c.loanDate || ""}</p>
-
-<p><b>🔄 Dây hiện tại:</b> ${c.cycleDate || ""}</p>
-
-<p><b>📌 Lần dồn gần nhất:</b> ${c.lastMergeDate || "Chưa có"}</p>
-
-<hr>
-
-<h3>📚 Các dây cũ</h3>
-
-`;
-
-    if((c.cycles || []).length===0){
-
-        html += "<p>Chưa có dây cũ</p>";
-
-    }else{
-
-        c.cycles.forEach((d,index)=>{
-
-            html += `
-
-<div class="oldCycle">
-
-<b>Dây ${index+1}</b>
-
-<p>📅 Từ: ${d.startDate}</p>
-
-<p>🏁 Đến: ${d.endDate}</p>
-
-<p>💵 Đã đóng: ${(d.totalPaid||0).toLocaleString()} đ</p>
-
-<p>🔄 Đã dồn: ${(d.mergeAmount||0).toLocaleString()} đ</p>
-
-<p>⭐ Lời: ${(d.profit||0).toLocaleString()} đ</p>
-
-<hr>
-
-</div>
-
-`;
-
-        });
-
-    }
-
-    html += `
-
-<h3>💵 Lịch sử đóng tiền</h3>
-
-`;
-
-    let hasThu = false;
-
-    (c.history || []).forEach(h=>{
-
-        if(h.type==="thu"){
-
-            hasThu = true;
-
-            html += `
-
-<p>
-
-📅 ${h.date}
-
-<br>
-
-Đóng: ${(h.amount||0).toLocaleString()} đ
-
-</p>
-
-`;
-
-        }
-
-    });
-
-    if(!hasThu){
-
-        html += "<p>Chưa có lịch sử đóng tiền</p>";
-
-    }
-
-    html += `
-
-<hr>
-
-<h3>🔄 Lịch sử dồn tiền</h3>
-
-`;
-
-    let hasDon = false;
-
-    (c.history || []).forEach(h=>{
-
-        if(h.type==="don"){
-
-            hasDon = true;
-
-            html += `
-
-<p>
-
-📅 ${h.date}
-
-<br>
-
-Đã đóng: ${(h.oldPaid||0).toLocaleString()} đ
-
-<br>
-
-Dồn: ${(h.amount||0).toLocaleString()} đ
-
-<br>
-
-Lời: ${(h.profit||0).toLocaleString()} đ
-
-</p>
-
-`;
-
-        }
-
-    });
-
-    if(!hasDon){
-
-        html += "<p>Chưa có lịch sử dồn tiền</p>";
-
-    }
-
-    document.getElementById("detailContent").innerHTML = html;
-
-};
-
-window.closeDetail = function(){
-
-    document.getElementById("customerDetail").classList.add("hidden");
-
-    document.getElementById("customers").classList.remove("hidden");
-
-};
