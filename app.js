@@ -1278,4 +1278,8 @@ document
 .classList.remove("hidden");
 
 
-};
+};window.testLogin=function(){
+
+alert("Nút hoạt động");
+
+}
