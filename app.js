@@ -1,34 +1,61 @@
-// =================================
-// SGC QUẢN LÝ - APP.JS
-// ĐOẠN A/3
-// =================================
+// =====================================
+// SGC QUẢN LÝ ONLINE - APP.JS
+// PHẦN 1/3
+// FIREBASE AUTH + FIRESTORE
+// =====================================
 
 
-let currentBook = null;
+import { auth, db } from "./firebase.js";
+
+
+import {
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    updatePassword
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+import {
+    doc,
+    setDoc,
+    getDoc,
+    collection,
+    addDoc,
+    getDocs,
+    deleteDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 
 
 // ================================
-// LẤY DANH SÁCH SỔ
+// BIẾN HỆ THỐNG
 // ================================
 
-function getBooks(){
+let currentUser = null;
 
-    return JSON.parse(
-        localStorage.getItem("SGC_BOOKS") || "[]"
-    );
+let currentBookId = null;
+
+let customers = [];
+
+
+
+
+
+// ================================
+// TẠO EMAIL ẨN
+// ================================
+
+function convertEmail(username){
+
+    return username
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g,"")
+    +"@sgc.vn";
 
 }
 
-
-
-function saveBooks(data){
-
-    localStorage.setItem(
-        "SGC_BOOKS",
-        JSON.stringify(data)
-    );
-
-}
 
 
 
@@ -37,11 +64,11 @@ function saveBooks(data){
 // TẠO SỔ MỚI
 // ================================
 
-function createBook(){
+window.createBook = async function(){
 
 
     let username =
-    prompt("Nhập tên tài khoản:");
+    prompt("Tên tài khoản:");
 
 
 
@@ -51,29 +78,13 @@ function createBook(){
 
 
     let password =
-    prompt("Nhập mật khẩu:");
+    prompt("Mật khẩu (ít nhất 6 ký tự):");
 
 
 
-    if(!password)
-    return;
+    if(!password || password.length < 6){
 
-
-
-    let books = getBooks();
-
-
-
-    let check =
-    books.find(
-        b=>b.username===username
-    );
-
-
-
-    if(check){
-
-        alert("Tài khoản đã tồn tại");
+        alert("Mật khẩu phải từ 6 ký tự");
 
         return;
 
@@ -81,44 +92,63 @@ function createBook(){
 
 
 
-    let book = {
+    try{
 
 
-        id:Date.now(),
-
-
-        username:username,
-
-
-        password:password,
-
-
-        bookName:"SGC",
-
-
-        customers:[],
-
-
-        history:[]
-
-
-    };
+        let email =
+        convertEmail(username);
 
 
 
-    books.push(book);
+        let user =
+        await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
 
 
 
-    saveBooks(books);
+        await setDoc(
+
+            doc(
+                db,
+                "books",
+                user.user.uid
+            ),
+
+            {
+
+                username:username,
+
+                createdAt:
+                new Date()
+
+            }
+
+        );
 
 
 
-    alert(
+        alert(
         "Tạo sổ thành công"
-    );
+        );
 
-}
+
+
+    }
+    catch(e){
+
+        alert(
+        e.message
+        );
+
+    }
+
+
+};
+
+
 
 
 
@@ -128,118 +158,111 @@ function createBook(){
 // ĐĂNG NHẬP
 // ================================
 
-function login(){
+window.login = async function(){
 
 
-    let user =
-    document.getElementById(
-        "loginUser"
-    ).value.trim();
-
-
-
-    let pass =
-    document.getElementById(
-        "loginPass"
-    ).value.trim();
+    let username =
+    document
+    .getElementById("loginUser")
+    .value;
 
 
 
-    let books = getBooks();
+    let password =
+    document
+    .getElementById("loginPass")
+    .value;
 
 
 
-    let book =
-    books.find(
-
-        b=>
-
-        b.username===user
-
-        &&
-
-        b.password===pass
-
-    );
+    try{
 
 
+        let result =
+        await signInWithEmailAndPassword(
 
-    if(!book){
+            auth,
 
-        alert(
-            "Sai tài khoản hoặc mật khẩu"
+            convertEmail(username),
+
+            password
+
         );
 
-        return;
+
+
+        currentUser =
+        result.user;
+
+
+
+        let book =
+        await getDoc(
+
+            doc(
+                db,
+                "books",
+                currentUser.uid
+            )
+
+        );
+
+
+
+        if(!book.exists()){
+
+            alert(
+            "Không tìm thấy sổ"
+            );
+
+            return;
+
+        }
+
+
+
+        currentBookId =
+        currentUser.uid;
+
+
+
+        document
+        .getElementById("loginBox")
+        .classList.add("hidden");
+
+
+
+        document
+        .getElementById("app")
+        .classList.remove("hidden");
+
+
+
+        document
+        .getElementById("bookName")
+        .innerText =
+        book.data().username;
+
+
+
+        loadCustomers();
+
+
+
+    }
+    catch(e){
+
+
+        alert(
+        "Sai tài khoản hoặc mật khẩu"
+        );
+
 
     }
 
 
+};
 
-    currentBook = book;
-
-
-
-    document
-    .getElementById("loginBox")
-    .classList.add("hidden");
-
-
-
-    document
-    .getElementById("app")
-    .classList.remove("hidden");
-
-
-
-    document
-    .getElementById("bookName")
-    .innerText =
-    currentBook.bookName;
-
-
-
-    renderCustomers();
-
-
-
-    updateStats();
-
-
-}
-
-
-
-
-
-// ================================
-// LƯU SỔ HIỆN TẠI
-// ================================
-
-function saveBook(){
-
-
-    let books =
-    getBooks();
-
-
-
-    let index =
-    books.findIndex(
-        b=>b.id===currentBook.id
-    );
-
-
-
-    if(index!==-1){
-
-        books[index]=currentBook;
-
-        saveBooks(books);
-
-    }
-
-}
 
 
 
@@ -250,10 +273,19 @@ function saveBook(){
 // ĐĂNG XUẤT
 // ================================
 
-function logout(){
+window.logout = async function(){
 
 
-    currentBook=null;
+    await signOut(auth);
+
+
+
+    currentUser=null;
+
+    currentBookId=null;
+
+    customers=[];
+
 
 
     document
@@ -267,37 +299,94 @@ function logout(){
     .classList.remove("hidden");
 
 
-}// =================================
-// SGC QUẢN LÝ - APP.JS
-// ĐOẠN B/3
-// KHÁCH HÀNG + THU TIỀN + DỒN TIỀN
-// =================================
+};// =====================================
+// SGC QUẢN LÝ ONLINE - APP.JS
+// PHẦN 2/3
+// KHÁCH HÀNG FIRESTORE
+// =====================================
 
 
 
 // ================================
-// CHUYỂN TAB
+// TẢI KHÁCH HÀNG
 // ================================
 
-function showTab(id){
+async function loadCustomers(){
 
 
-    document
-    .querySelectorAll("section")
-    .forEach(s=>{
+    if(!currentBookId)
+    return;
 
-        s.classList.add("hidden");
+
+
+    customers=[];
+
+
+
+    let snap =
+    await getDocs(
+
+        collection(
+            db,
+            "books",
+            currentBookId,
+            "customers"
+        )
+
+    );
+
+
+
+    snap.forEach(doc=>{
+
+
+        customers.push({
+
+            id:doc.id,
+
+            ...doc.data()
+
+        });
+
 
     });
 
 
 
-    document
-    .getElementById(id)
-    .classList.remove("hidden");
+    renderCustomers();
 
 
 }
+
+
+
+
+
+
+
+// ================================
+// LƯU KHÁCH
+// ================================
+
+async function saveCustomer(data){
+
+
+    await addDoc(
+
+        collection(
+            db,
+            "books",
+            currentBookId,
+            "customers"
+        ),
+
+        data
+
+    );
+
+
+}
+
 
 
 
@@ -307,11 +396,13 @@ function showTab(id){
 // THÊM KHÁCH
 // ================================
 
-function addCustomer(){
+window.addCustomer = async function(){
 
 
     let name =
     prompt("Tên khách:");
+
+
 
     if(!name)
     return;
@@ -325,7 +416,7 @@ function addCustomer(){
 
     let loan =
     Number(
-        prompt("Số tiền vay:")
+        prompt("Tiền vay:")
     );
 
 
@@ -337,78 +428,49 @@ function addCustomer(){
 
 
 
-    let today =
+    let date =
     new Date()
     .toLocaleDateString("vi-VN");
 
 
 
-    let customer = {
-
-
-        id:Date.now(),
+    let customer={
 
 
         name:name,
 
-
         phone:phone || "",
 
-
-        loan:loan,
-
+        loan:loan || 0,
 
         daily:daily || 0,
 
-
         paid:0,
-
 
         profit:0,
 
+        loanDate:date,
 
-        loanDate:today,
-
-
-        cycleDate:today,
-
+        cycleDate:date,
 
         lastMergeDate:"",
 
-
         history:[]
-
 
     };
 
 
 
-    currentBook.customers.push(customer);
+    await saveCustomer(customer);
 
 
 
-    saveBook();
+    loadCustomers();
 
 
-    renderCustomers();
+};
 
 
-}
-
-
-
-
-
-// ================================
-// TÌM KHÁCH
-// ================================
-
-function searchCustomer(){
-
-
-    renderCustomers();
-
-}
 
 
 
@@ -418,7 +480,7 @@ function searchCustomer(){
 // HIỂN THỊ KHÁCH
 // ================================
 
-function renderCustomers(){
+window.renderCustomers=function(){
 
 
     let box =
@@ -428,7 +490,7 @@ function renderCustomers(){
 
 
 
-    if(!box || !currentBook)
+    if(!box)
     return;
 
 
@@ -437,39 +499,34 @@ function renderCustomers(){
 
 
 
-    let key =
-    document.getElementById(
+    let search =
+    document
+    .getElementById(
         "searchBox"
-    ).value
+    )
+    .value
     .toLowerCase();
 
 
 
-    currentBook.customers.forEach(
-    (c,index)=>{
 
+    customers.forEach((c,index)=>{
 
 
         if(
-            key
-            &&
+            search &&
             !c.name
             .toLowerCase()
-            .includes(key)
+            .includes(search)
         )
         return;
-
-
-
-        let status =
-        getStatus(c);
 
 
 
         box.innerHTML += `
 
 
-        <div class="customer ${status}">
+        <div class="customer">
 
 
         <h4>
@@ -478,7 +535,7 @@ function renderCustomers(){
 
 
         <p>
-        💰 Vay:
+        💰 Tiền vay:
         ${c.loan.toLocaleString()} đ
         </p>
 
@@ -490,36 +547,34 @@ function renderCustomers(){
 
 
         <p>
-        🔄 Dây:
-        ${c.cycleDate}
+        💵 Đã đóng:
+        ${c.paid.toLocaleString()} đ
         </p>
 
 
         <p>
-        💵 Còn nợ:
-        ${(c.loan-c.paid)
-        .toLocaleString()} đ
+        ⭐ Lời:
+        ${c.profit.toLocaleString()} đ
         </p>
 
 
-        <button onclick="collectMoney(${index})">
+
+        <button onclick="collectMoney('${c.id}')">
         Thu tiền
         </button>
 
 
-        <button onclick="mergeMoney(${index})">
+
+        <button onclick="mergeMoney('${c.id}')">
         Dồn tiền
         </button>
 
 
-        <button onclick="detailCustomer(${index})">
-        Chi tiết
-        </button>
 
-
-        <button onclick="deleteCustomer(${index})">
+        <button onclick="deleteCustomer('${c.id}')">
         Xóa khách
         </button>
+
 
 
         </div>
@@ -531,9 +586,7 @@ function renderCustomers(){
     });
 
 
-
-}
-
+};
 
 
 
@@ -541,45 +594,89 @@ function renderCustomers(){
 
 
 // ================================
-// TRẠNG THÁI KHÁCH
+// TÌM KIẾM
 // ================================
 
-function getStatus(c){
+window.searchCustomer=function(){
 
+    renderCustomers();
 
-    if(c.paid>=c.loan)
-    return "yellow";
-
-
-
-    let today =
-    new Date()
-    .toLocaleDateString("vi-VN");
+};
 
 
 
-    let paidToday =
-    c.history.some(
-        h=>
-        h.date===today
-        &&
-        h.type==="thu"
+
+
+
+// ================================
+// XÓA KHÁCH
+// ================================
+
+window.deleteCustomer=async function(id){
+
+
+    if(
+        !confirm(
+        "Xóa khách này?"
+        )
+    )
+    return;
+
+
+
+    await deleteDoc(
+
+        doc(
+
+            db,
+
+            "books",
+
+            currentBookId,
+
+            "customers",
+
+            id
+
+        )
+
     );
 
 
 
-    if(paidToday)
-    return "green";
+    loadCustomers();
 
 
+};// =====================================
+// SGC QUẢN LÝ ONLINE - APP.JS
+// PHẦN 3/3
+// THU TIỀN - DỒN TIỀN - THỐNG KÊ
+// =====================================
 
-    return "red";
+
+// ================================
+// CẬP NHẬT KHÁCH
+// ================================
+
+async function updateCustomer(id,data){
+
+
+    await setDoc(
+
+        doc(
+            db,
+            "books",
+            currentBookId,
+            "customers",
+            id
+        ),
+
+        data
+
+    );
+
 
 }
-
-
-
-
 
 
 
@@ -587,11 +684,17 @@ function getStatus(c){
 // THU TIỀN
 // ================================
 
-function collectMoney(index){
+window.collectMoney = async function(id){
 
 
     let c =
-    currentBook.customers[index];
+    customers.find(
+        x=>x.id===id
+    );
+
+
+    if(!c)
+    return;
 
 
 
@@ -631,20 +734,20 @@ function collectMoney(index){
 
 
 
-    saveBook();
+    await updateCustomer(
+        id,
+        c
+    );
 
 
-    renderCustomers();
+
+    loadCustomers();
 
 
-    updateStats();
+
+};
 
 
-}// =================================
-// SGC QUẢN LÝ - APP.JS
-// ĐOẠN C/3
-// DỒN TIỀN + CHI TIẾT + XÓA + THỐNG KÊ + CÀI ĐẶT
-// =================================
 
 
 
@@ -654,18 +757,25 @@ function collectMoney(index){
 // DỒN TIỀN
 // ================================
 
-function mergeMoney(index){
+window.mergeMoney = async function(id){
 
 
     let c =
-    currentBook.customers[index];
+    customers.find(
+        x=>x.id===id
+    );
+
+
+
+    if(!c)
+    return;
 
 
 
     let money =
     Number(
         prompt(
-        "Số tiền dồn trả lại khách:"
+        "Số tiền dồn trả khách:"
         )
     );
 
@@ -679,7 +789,7 @@ function mergeMoney(index){
     if(money > c.paid){
 
         alert(
-        "Tiền dồn không được lớn hơn tiền đã đóng"
+        "Số tiền dồn lớn hơn tiền đã đóng"
         );
 
         return;
@@ -702,14 +812,15 @@ function mergeMoney(index){
     c.paid -= money;
 
 
+
     c.profit += profit;
 
 
 
-    c.lastMergeDate = date;
+    c.cycleDate=date;
 
 
-    c.cycleDate = date;
+    c.lastMergeDate=date;
 
 
 
@@ -727,123 +838,18 @@ function mergeMoney(index){
 
 
 
-    currentBook.history.push({
-
-        type:"don",
-
-        amount:money,
-
-        profit:profit,
-
-        customer:c.name,
-
-        date:date
-
-    });
-
-
-
-    saveBook();
-
-
-    renderCustomers();
-
-
-    updateStats();
-
-
-
-}
-
-
-
-
-
-
-
-// ================================
-// CHI TIẾT KHÁCH
-// ================================
-
-function detailCustomer(index){
-
-
-    let c =
-    currentBook.customers[index];
-
-
-
-    alert(
-
-    "👤 "+c.name+
-
-    "\n\n💰 Tiền vay: "
-    +c.loan.toLocaleString()+" đ"+
-
-
-    "\n💵 Đã đóng: "
-    +c.paid.toLocaleString()+" đ"+
-
-
-    "\n📌 Còn nợ: "
-    +(c.loan-c.paid)
-    .toLocaleString()+" đ"+
-
-
-    "\n📅 Ngày mượn: "
-    +c.loanDate+
-
-
-    "\n🔄 Dây hiện tại: "
-    +c.cycleDate+
-
-
-    "\n⭐ Tổng lời: "
-    +c.profit.toLocaleString()+" đ"
-
+    await updateCustomer(
+        id,
+        c
     );
 
-}
+
+
+    loadCustomers();
 
 
 
-
-
-
-
-// ================================
-// XÓA KHÁCH
-// ================================
-
-function deleteCustomer(index){
-
-
-    let c =
-    currentBook.customers[index];
-
-
-
-    if(
-        confirm(
-        "Xóa khách "+c.name+"?"
-        )
-    ){
-
-        currentBook.customers.splice(
-            index,
-            1
-        );
-
-
-        saveBook();
-
-
-        renderCustomers();
-
-    }
-
-}
-
+};
 
 
 
@@ -854,12 +860,7 @@ function deleteCustomer(index){
 // THỐNG KÊ
 // ================================
 
-function updateStats(){
-
-
-    if(!currentBook)
-    return;
-
+window.updateStats=function(){
 
 
     let today =
@@ -868,123 +869,84 @@ function updateStats(){
 
 
 
-    let month =
-    new Date()
-    .getMonth()+1;
+    let totalThu=0;
+
+    let totalDon=0;
+
+    let totalProfit=0;
 
 
 
-    let year =
-    new Date()
-    .getFullYear();
+    customers.forEach(c=>{
+
+
+        c.history.forEach(h=>{
+
+
+            if(h.date===today){
+
+
+                if(h.type==="thu")
+                totalThu+=h.amount;
 
 
 
-    let thuToday=0;
+                if(h.type==="don"){
 
-    let thuMonth=0;
+                    totalDon+=h.amount;
 
-    let donToday=0;
+                    totalProfit+=h.profit;
 
-    let donMonth=0;
-
-    let profitToday=0;
-
-    let profitMonth=0;
+                }
 
 
-
-    currentBook.history.forEach(h=>{
-
-
-        let d =
-        h.date.split("/");
+            }
 
 
-
-        if(h.type==="thu"){
-
-            if(h.date===today)
-            thuToday += h.amount;
-
-
-            if(
-            Number(d[1])===month
-            &&
-            Number(d[2])===year
-            )
-            thuMonth += h.amount;
-
-        }
-
-
-
-
-        if(h.type==="don"){
-
-            if(h.date===today)
-            donToday += h.amount;
-
-
-            if(
-            Number(d[1])===month
-            &&
-            Number(d[2])===year
-            )
-            donMonth += h.amount;
-
-
-
-            if(h.date===today)
-            profitToday += h.profit;
-
-
-            if(
-            Number(d[1])===month
-            &&
-            Number(d[2])===year
-            )
-            profitMonth += h.profit;
-
-        }
-
+        });
 
 
     });
 
 
 
-    todayIncome.innerText =
-    thuToday.toLocaleString();
+    let a =
+    document.getElementById(
+        "todayIncome"
+    );
+
+
+    let b =
+    document.getElementById(
+        "todayMerge"
+    );
+
+
+    let c =
+    document.getElementById(
+        "todayProfit"
+    );
 
 
 
-    monthIncome.innerText =
-    thuMonth.toLocaleString();
+    if(a)
+    a.innerText=
+    totalThu.toLocaleString();
 
 
 
-    todayMerge.innerText =
-    donToday.toLocaleString();
+    if(b)
+    b.innerText=
+    totalDon.toLocaleString();
 
 
 
-    monthMerge.innerText =
-    donMonth.toLocaleString();
+    if(c)
+    c.innerText=
+    totalProfit.toLocaleString();
 
 
-
-    todayProfit.innerText =
-    profitToday.toLocaleString();
-
-
-
-    monthProfit.innerText =
-    profitMonth.toLocaleString();
-
-
-}
-
+};
 
 
 
@@ -995,35 +957,34 @@ function updateStats(){
 // ĐỔI MẬT KHẨU
 // ================================
 
-function changePassword(){
+window.changePassword = async function(){
 
 
-    let p =
+    let pass =
     prompt(
-    "Mật khẩu mới:"
+    "Nhập mật khẩu mới:"
     );
 
 
 
-    if(!p)
+    if(!pass)
     return;
 
 
 
-    currentBook.password=p;
-
-
-
-    saveBook();
+    await updatePassword(
+        auth.currentUser,
+        pass
+    );
 
 
 
     alert(
-    "Đã đổi mật khẩu"
+    "Đổi mật khẩu thành công"
     );
 
-}
 
+};
 
 
 
@@ -1034,12 +995,14 @@ function changePassword(){
 // SAO LƯU
 // ================================
 
-function backupData(){
+window.backupData=function(){
 
 
     let data =
     JSON.stringify(
-        currentBook
+        customers,
+        null,
+        2
     );
 
 
@@ -1048,9 +1011,14 @@ function backupData(){
     new Blob(
         [data],
         {
-        type:"application/json"
+            type:"application/json"
         }
     );
+
+
+
+    let url =
+    URL.createObjectURL(blob);
 
 
 
@@ -1059,17 +1027,14 @@ function backupData(){
 
 
 
-    a.href =
-    URL.createObjectURL(blob);
+    a.href=url;
 
 
-
-    a.download =
+    a.download=
     "SGC_backup.json";
-
 
 
     a.click();
 
 
-}
+};
