@@ -828,7 +828,9 @@ window.mergeMoney = async function(id){
     // Lưu lịch sử dồn
 
     if(!c.history)
-    c.history=[];
+    history:[],
+
+cycles:[];
 
 
 
@@ -1067,6 +1069,188 @@ window.backupData=function(){
 
 
     a.click();
+
+
+};// ================================
+// CHI TIẾT KHÁCH
+// ================================
+
+window.openCustomerDetail=function(id){
+
+
+    let c = customers.find(
+        x=>x.id===id
+    );
+
+
+    if(!c) return;
+
+
+
+    document
+    .getElementById("customers")
+    .classList.add("hidden");
+
+
+    document
+    .getElementById("customerDetail")
+    .classList.remove("hidden");
+
+
+
+    let html = `
+
+<h3>${c.name}</h3>
+
+
+<p>
+💰 Tiền vay:
+${(c.loan||0).toLocaleString()} đ
+</p>
+
+
+<p>
+📅 Ngày mượn:
+${c.loanDate || ""}
+</p>
+
+
+<p>
+💵 Góp mỗi ngày:
+${(c.daily||0).toLocaleString()} đ
+</p>
+
+
+<p>
+🔄 Dây hiện tại:
+${c.cycleDate || ""}
+</p>
+
+
+<p>
+⭐ Tổng lời:
+${(c.profit||0).toLocaleString()} đ
+</p>
+
+
+<hr>
+
+
+<h4>
+📌 Lịch sử đóng tiền
+</h4>
+
+`;
+
+
+
+let thu=false;
+
+
+(c.history||[]).forEach(h=>{
+
+    if(h.type==="thu"){
+
+        thu=true;
+
+        html += `
+
+<p>
+${h.date}
+<br>
+Đóng:
+${h.amount.toLocaleString()} đ
+</p>
+
+`;
+
+    }
+
+});
+
+
+
+if(!thu){
+
+html += "<p>Chưa có lịch sử đóng</p>";
+
+}
+
+
+
+html += `
+
+<hr>
+
+<h4>
+📌 Lịch sử dồn
+</h4>
+
+`;
+
+
+
+let don=false;
+
+
+(c.history||[]).forEach(h=>{
+
+    if(h.type==="don"){
+
+        don=true;
+
+
+        html += `
+
+<p>
+${h.date}
+
+<br>
+Dồn:
+${h.amount.toLocaleString()} đ
+
+<br>
+Lời:
+${h.profit.toLocaleString()} đ
+</p>
+
+`;
+
+    }
+
+});
+
+
+if(!don){
+
+html += "<p>Chưa có lịch sử dồn</p>";
+
+}
+
+
+
+document
+.getElementById("detailContent")
+.innerHTML=html;
+
+
+};
+
+
+
+
+
+window.closeDetail=function(){
+
+
+document
+.getElementById("customerDetail")
+.classList.add("hidden");
+
+
+document
+.getElementById("customers")
+.classList.remove("hidden");
 
 
 };
